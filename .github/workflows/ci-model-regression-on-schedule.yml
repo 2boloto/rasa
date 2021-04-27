@@ -90,7 +90,7 @@ jobs:
       # Determine where CUDA and Nvidia libraries are located. TensorFlow looks for libraries in the given paths
       LD_LIBRARY_PATH: "/usr/local/cuda/extras/CUPTI/lib64:/usr/local/cuda/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64"
       ACCELERATOR_TYPE: "GPU"
-      GITHUB_ISSUE_TITLE: "Scheduled Model Regression Test Failed"
+      GITHUB_ISSUE_TITLE: 'Scheduled Model Regression Test Failed'
 
     runs-on: [self-hosted, gpu]
     strategy:
@@ -277,7 +277,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: '${{ env.GITHUB_ISSUE_TITLE }}',
-              labels: ${{ env.GITHUB_ISSUE_LABEL }},
+              labels: ${{ env.GITHUB_ISSUE_LABELS }},
               assignees: ['${{ env.ASSIGNEE }}'],
               body: '*This PR is automatically created by the Scheduled Model Regression Test workflow. Checkout the Github Action Run [here](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}).* <br> --- <br> **Description of Problem:** <br> Scheduled Model Regression Test failed. <br> **Configuration**: `${{ matrix.config }}` <br> **Dataset**: `${{ matrix.dataset}}`'
             })
@@ -331,7 +331,7 @@ jobs:
     - deploy_runner_gpu
     - model_regression_test_gpu
     env:
-      GITHUB_ISSUE_TITLE: "Scheduled Model Regression Test Performance Drops"
+      GITHUB_ISSUE_TITLE: 'Scheduled Model Regression Test Performance Drops'
 
     steps:
       - name: Checkout
@@ -396,15 +396,16 @@ jobs:
           result-encoding: string
           github-token: ${{ github.token }}
           script: |
-            // Get all open issues
+            // Get all open issues based on labels
             const opts = await github.issues.listForRepo.endpoint.merge({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
-              labels: ${{ env.GITHUB_ISSUE_LABEL }}
+              labels: ${{ env.GITHUB_ISSUE_LABELS }}
             });
             const issues = await github.paginate(opts)
-            // Check if issue exist
+
+            // Check if issue exist by comparing title
             for (const issue of issues) {
               if (issue.title.includes('${{ env.GITHUB_ISSUE_TITLE }}') ) {
                   console.log(`Found an exist issue \#${issue.number}. Skip the following steps.`);
@@ -440,7 +441,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: '${{ env.GITHUB_ISSUE_TITLE }}',
-              labels: ${{ env.GITHUB_ISSUE_LABEL }},
+              labels: ${{ env.GITHUB_ISSUE_LABELS }},
               assignees: ['${{ env.ASSIGNEE }}'],
               body: '*This PR is automatically created by the Scheduled Model Regression Test workflow. Checkout the Github Action Run [here](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}).* <br> --- <br> **Description of Problem:** <br>  Some test performance scores **decreased**. Please look at the following table for more details. <br> ${{ steps.performance.outputs.report_description }}'
             })
