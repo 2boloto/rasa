@@ -437,7 +437,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            var issue = github.issues.create({
+            var issue = await github.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: '${{ env.GITHUB_ISSUE_TITLE }}',
